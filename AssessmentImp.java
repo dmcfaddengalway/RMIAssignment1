@@ -3,12 +3,14 @@ import java.util.List;
 
 public class AssessmentImpl implements Assessment {
 
+  // Member Variables
   private String information;
   private Date ClosingDate;
   private List<Question> questions;
   private int answer;
   private int AssociatedId;
 
+  // Constructor
   public AssessmentImpl(String information, Date Closing, List quest, int answer, int ID) {
     this.information = information;
     this.ClosingDate = Closing;

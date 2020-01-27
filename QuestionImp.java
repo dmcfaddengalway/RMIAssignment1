@@ -1,8 +1,11 @@
 public class QuestionImpl implements Question {
+
+  // Member Variables
   private int questionNo;
   private String questionDe;
   private String[] options;
 
+  // Constructor
   public QuestionImpl(int qNo, String qDe, String[] options) {
     this.options = options;
     this.questionDe = qDe;
