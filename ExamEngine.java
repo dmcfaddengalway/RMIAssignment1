@@ -9,16 +9,16 @@ import java.util.List;
 
 public class ExamEngine implements ExamServer {
 
-	private static Student[] studs;
+	private static Student[] students;
 	private HashMap<Integer, Session> sessions;
-	private static Assessment[] assessm;
-	Random rand;
+	private static Assessment[] assessments;
+	Random randomNumber;
 
 	// Constructor is required
 	public ExamEngine() {
 		super();
-		ExamEngine.studs = students;
-		ExamEngine.assessm = ass;
+		ExamEngine.students = students;
+		ExamEngine.assessments = ass;
 		this.sessions = new HashMap<>();
 	}
 
@@ -28,10 +28,10 @@ public class ExamEngine implements ExamServer {
 		int min = 0;
 		int max = 10000000;
 
-		for (Student s : studs) {
+		for (Student s : students) {
 			if (s.getId() == studentid && s.getPassword() == password) {
 
-				int randomNum = rand.nextInt((max - min) + 1) + min;
+				int randomNum = randomNumber.nextInt((max - min) + 1) + min;
 				sessions.put(randomNum, new Session(studentid));
 				return randomNum;
 			}
@@ -45,7 +45,7 @@ public class ExamEngine implements ExamServer {
 		checkSessionId(token, studentid);
 		List<Assessment> assessments = new ArrayList<Assessment>();
 
-		for (Assessment a : ExamEngine.assessm) {
+		for (Assessment a : ExamEngine.assessments) {
 			if (a.getAssociatedID() == studentid) {
 				assessments.add(a);
 			}
@@ -62,7 +62,7 @@ public class ExamEngine implements ExamServer {
 	public Assessment getAssessment(int token, int studentid, String courseCode) throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
 		checkSessionId(token, studentid);
 
-		for (Assessment a : assessm) {
+		for (Assessment a : assessments) {
 			if (a.getInformation().equals(courseCode) && a.getAssociatedID() == studentid
 					&& a.getClosingDate().after(new Date())) {
 				return a;
@@ -94,12 +94,12 @@ public class ExamEngine implements ExamServer {
 	private static Assessment[] generateAssessments(Student stu1) {
 		Assessment history = new AssessmentImp("History", new Date(new Date().getTime() +1000)
 				,
-			new List<Question>() {
+			new List<Question>(
 			new QuestionImp(1, "In what year did TeamSlicedBread create the H.E.L.M.E.T?",
 					new String[]{"2013", "2014", "2017"}),
 			new QuestionImp(2, "What year is it now?",
-					new String[]{"2012","2018","2019"})}
-			, 1, 13500527);
+					new String[]{"2012","2018","2019"})
+			, 1, 13500527));
 		return new Assessment[]{history};
 	}
 
