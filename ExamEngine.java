@@ -45,7 +45,7 @@ public class ExamEngine implements ExamServer {
 		checkSessionId(token, studentid);
 		List<Assessment> assessments = new ArrayList<Assessment>();
 
-		for (Assessment a : this.assessm) {
+		for (Assessment a : ExamEngine.assessm) {
 			if (a.getAssociatedID() == studentid) {
 				assessments.add(a);
 			}
@@ -92,12 +92,12 @@ public class ExamEngine implements ExamServer {
 	}
 
 	private static Assessment[] generateAssessments(Student stu1) {
-		Assessment history = new AssessmentImpl("History", new Date(new Date().getTime() +1000)
+		Assessment history = new AssessmentImp("History", new Date(new Date().getTime() +1000)
 				,
 			new List<Question>() {
-			new QuestionImpl(1, "In what year did TeamSlicedBread create the H.E.L.M.E.T?",
+			new QuestionImp(1, "In what year did TeamSlicedBread create the H.E.L.M.E.T?",
 					new String[]{"2013", "2014", "2017"}),
-			new QuestionImpl(2, "What year is it now?",
+			new QuestionImp(2, "What year is it now?",
 					new String[]{"2012","2018","2019"})}
 			, 1, 13500527);
 		return new Assessment[]{history};
