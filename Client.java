@@ -19,6 +19,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class Client extends JFrame implements ActionListener, ExamServer {
+
+  private static final long serialVersionUID = 1L;
   JLabel lblId;
   JLabel lblPass;
   JTextField txtId;

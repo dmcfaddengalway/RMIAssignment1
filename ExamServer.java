@@ -1,7 +1,4 @@
 // ExamServer.java
-
-package ct414;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -9,7 +6,7 @@ import java.util.List;
 public interface ExamServer extends Remote {
 
 	// Return an access token that allows access to the server for some time period
-	public int login(int studentid, String password) throws 
+	public int login(int studentid, String password) throws
 		UnauthorizedAccess, RemoteException;
 
 	// Return a summary list of Assessments currently available for this studentid
@@ -21,7 +18,7 @@ public interface ExamServer extends Remote {
 		UnauthorizedAccess, NoMatchingAssessment, RemoteException;
 
 	// Submit a completed assessment
-	public void submitAssessment(int token, int studentid, Assessment completed) throws 
+	public void submitAssessment(int token, int studentid, Assessment completed) throws
 		UnauthorizedAccess, NoMatchingAssessment, RemoteException;
 
 }

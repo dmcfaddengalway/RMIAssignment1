@@ -1,7 +1,4 @@
 // Question.java
-
-package ct414;
-
 import java.io.Serializable;
 
 public interface Question extends Serializable {

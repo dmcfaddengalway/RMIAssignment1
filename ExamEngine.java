@@ -1,11 +1,13 @@
-
-package ct414;
-
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ExamEngine implements ExamServer {
 
@@ -15,10 +17,10 @@ public class ExamEngine implements ExamServer {
 	Random randomNumber;
 
 	// Constructor is required
-	public ExamEngine() {
+	public ExamEngine(Students students, Assessment assessments) {
 		super();
 		ExamEngine.students = students;
-		ExamEngine.assessments = ass;
+		ExamEngine.assessments = assessments;
 		this.sessions = new HashMap<>();
 	}
 
@@ -37,7 +39,7 @@ public class ExamEngine implements ExamServer {
 			}
 		}
 
-		throw new UnauthorizedAccess("Your Username/ Password was Entered incorrectly");
+		throw new UnauthorizedAccess("Your Username/Password was Entered incorrectly");
 	}
 
 	// Return a summary list of Assessments currently available for this studentid

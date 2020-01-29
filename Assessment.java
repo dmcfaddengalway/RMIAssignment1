@@ -1,14 +1,11 @@
-// Assessment.java 
-
-package ct414;
-
+// Assessment.java
 import java.util.Date;
 import java.util.List;
 import java.io.Serializable;
 
 public interface Assessment extends Serializable {
 
-	// Return information about the assessment	
+	// Return information about the assessment
 	public String getInformation();
 
 	// Return the final date / time for submission of completed assessment
@@ -18,7 +15,7 @@ public interface Assessment extends Serializable {
 	public List<Question> getQuestions();
 
 	// Return one question only with answer options
-	public Question getQuestion(int questionNumber) throws 
+	public Question getQuestion(int questionNumber) throws
 		InvalidQuestionNumber;
 
 	// Answer a particular question

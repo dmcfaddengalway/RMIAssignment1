@@ -1,7 +1,7 @@
 import java.util.Date;
 import java.util.List;
 
-public class AssessmentImpl implements Assessment {
+public class AssessmentImp implements Assessment {
 
   // Member Variables
   private String information;
@@ -9,9 +9,10 @@ public class AssessmentImpl implements Assessment {
   private List<Question> questions;
   private int answer;
   private int AssociatedId;
+  private static final long serialVersionUID = 1L;
 
   // Constructor
-  public AssessmentImpl(String information, Date Closing, List quest, int answer, int ID) {
+  public AssessmentImp(String information, Date Closing, List<Question> quest, int answer, int ID) {
     this.information = information;
     this.ClosingDate = Closing;
     this.questions = quest;

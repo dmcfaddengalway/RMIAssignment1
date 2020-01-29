@@ -1,12 +1,13 @@
-public class QuestionImpl implements Question {
+public class QuestionImp implements Question {
 
   // Member Variables
   private int questionNo;
   private String questionDe;
   private String[] options;
+  private static final long serialVersionUID = 1L;
 
   // Constructor
-  public QuestionImpl(int qNo, String qDe, String[] options) {
+  public QuestionImp(int qNo, String qDe, String[] options) {
     this.options = options;
     this.questionDe = qDe;
     this.questionNo = qNo;
