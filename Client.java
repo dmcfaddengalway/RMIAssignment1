@@ -32,7 +32,7 @@ public class Client extends JFrame implements ActionListener, ExamServer {
     getContentPane().setLayout(null);
 
     // Labels and text fields for ID & password
-    lblId = new JLabel("ID: ");
+    lblId = new JLabel("Student ID: ");
     lblId.setBounds(10, 10, 90, 21);
     add(lblId);
 
@@ -48,7 +48,7 @@ public class Client extends JFrame implements ActionListener, ExamServer {
     txtPass.setBounds(105, 35, 90, 21);
     add(txtPass);
 
-    btnProcess = new JButton("Process");
+    btnProcess = new JButton("Login");
     btnProcess.setBounds(200, 40, 90, 21);
     btnProcess.addActionListener(this);
     add(btnProcess);
@@ -65,6 +65,7 @@ public class Client extends JFrame implements ActionListener, ExamServer {
     String name = "ExamServer";
     Registry registry = LocateRegistry.getRegistry();
     server = (ExamServer) registry.lookup(name);
+    System.out.println("GUI started!");
   }
 
   @Override
