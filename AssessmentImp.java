@@ -8,7 +8,7 @@ public class AssessmentImp implements Assessment {
   private Date ClosingDate;
   private List<Question> questions;
   private int answer;
-  private int AssociatedId;
+  private int associatedId;
   private static final long serialVersionUID = 1L;
 
   // Constructor
@@ -17,7 +17,7 @@ public class AssessmentImp implements Assessment {
     this.ClosingDate = Closing;
     this.questions = question;
     this.answer = answer;
-    this.AssociatedId = ID;
+    this.associatedId = ID;
   }
 
   // Methods
@@ -70,7 +70,7 @@ public class AssessmentImp implements Assessment {
 
     @Override
     public int getAssociatedID() {
-      return this.AssociatedId;
+      return this.associatedId;
     }
 
 }
