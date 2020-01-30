@@ -78,8 +78,9 @@ public class Client extends JFrame implements ActionListener, ExamServer {
       try {
         int ID = Integer.parseInt(txtId.getText());
         String pass = txtPass.getText();
-        this.login(ID, pass);
-      } catch (IOException | UnauthorizedAccess e1) {
+        int token = this.login(ID, pass);
+        this.getAvailableSummary(ID, token);
+      } catch (IOException | UnauthorizedAccess | NoMatchingAssessment e1) {
         e1.printStackTrace();
       }
     }
@@ -99,9 +100,16 @@ public class Client extends JFrame implements ActionListener, ExamServer {
   }
 
   @Override
-  public List<String> getAvailableSummary(int token, int studentid)
-      throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
-    return null;
+  public List<String> getAvailableSummary(int studentID, int token) throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
+    System.out.println("In Client Assessment");
+    List<String> availableAssessments;
+    availableAssessments = server.getAvailableSummary(studentID, token);
+
+    for(String ass : availableAssessments) {
+      System.out.println(ass);
+    }
+
+    return availableAssessments;
   }
 
   @Override

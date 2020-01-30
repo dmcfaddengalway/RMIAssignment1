@@ -55,7 +55,9 @@ public class ExamEngine implements ExamServer {
 	// Return a summary list of Assessments currently available for this studentid
 	public List<String> getAvailableSummary(int studentID, int token) throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
 		ArrayList<String> availableAssessments = new ArrayList<String>();
+		System.out.println("In Servers Assessment");
 
+		System.out.println(sessions);
 		for(Session session : sessions) {
 			if(session.isActive() == token && session.getStudentID() == studentID) {
 				for (Assessment assessment : assessments) {
