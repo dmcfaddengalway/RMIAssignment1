@@ -2,12 +2,12 @@ public class Student {
 
   // Member Variables
   private String password;
-  private int id;
+  private int studentIDNum;
 
   // Constructor
-  public Student(String pw, int idNo) {
-    this.password = pw;
-    this.id = idNo;
+  public Student(int studentIDNum, String password) {
+    this.studentIDNum = studentIDNum;
+    this.password = password;
   }
 
   // Methods
@@ -21,8 +21,8 @@ public class Student {
       return password;
     }
 
-    public int getId() {
-      return id;
+    public int getID() {
+      return studentIDNum;
     }
 
 }

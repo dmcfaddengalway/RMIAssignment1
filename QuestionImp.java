@@ -1,16 +1,16 @@
 public class QuestionImp implements Question {
 
   // Member Variables
-  private int questionNo;
-  private String questionDe;
+  private int questionNum;
+  private String questionDetails;
   private String[] options;
   private static final long serialVersionUID = 1L;
 
   // Constructor
-  public QuestionImp(int qNo, String qDe, String[] options) {
+  public QuestionImp(int qNum, String qDetails, String[] options) {
+    this.questionNum = qNum;
+    this.questionDetails = qDetails;
     this.options = options;
-    this.questionDe = qDe;
-    this.questionNo = qNo;
   }
 
   // Methods
@@ -22,12 +22,12 @@ public class QuestionImp implements Question {
     // Getters
     @Override
     public int getQuestionNumber() {
-      return this.questionNo;
+      return this.questionNum;
     }
 
     @Override
     public String getQuestionDetail() {
-      return this.questionDe;
+      return this.questionDetails;
     }
 
     @Override

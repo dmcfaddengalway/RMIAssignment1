@@ -12,10 +12,10 @@ public class AssessmentImp implements Assessment {
   private static final long serialVersionUID = 1L;
 
   // Constructor
-  public AssessmentImp(String information, Date Closing, List<Question> quest, int answer, int ID) {
+  public AssessmentImp(String information, Date Closing, List<Question> question, int answer, int ID) {
     this.information = information;
     this.ClosingDate = Closing;
-    this.questions = quest;
+    this.questions = question;
     this.answer = answer;
     this.AssociatedId = ID;
   }

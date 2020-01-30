@@ -3,13 +3,13 @@ import java.util.Date;
 public class Session {
 
   // Member Variables
-  private Date logout;
+  private Date logoutTime;
   private int studentId;
 
   // Constructor
-  public Session(int id) {
-    this.logout = new Date(new Date().getTime() + 3600000);
-    this.studentId = id;
+  public Session(int studentID) {
+    this.studentId = studentID;
+    this.logoutTime = new Date(new Date().getTime() + 3600000);
   }
 
   // Methods
@@ -24,7 +24,7 @@ public class Session {
     }
 
     public Date getLogout() {
-      return logout;
+      return logoutTime;
     }
 
 }
