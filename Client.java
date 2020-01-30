@@ -1,7 +1,11 @@
 import java.awt.event.ActionEvent;
 import java.rmi.*;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -72,34 +76,26 @@ public class Client extends JFrame implements ActionListener, ExamServer {
   public void actionPerformed(ActionEvent e) {
     if (e.getSource().equals(btnProcess)) {
       try {
-        processInformation();
-      } catch (UnknownHostException e1) {
-        e1.printStackTrace();
-      } catch (IOException e1) {
+        int ID = Integer.parseInt(txtId.getText());
+        String pass = txtPass.getText();
+        this.login(ID, pass);
+      } catch (IOException | UnauthorizedAccess e1) {
         e1.printStackTrace();
       }
     }
   }
 
-  public void processInformation() throws UnknownHostException, IOException {
-    // Socket s = new Socket("localhost", 5000);
-    // ObjectOutputStream p = new ObjectOutputStream(s.getOutputStream());
-
-    /*
-     * String ID = txtId.getText(); int Pass = Integer.parseInt(txtPass.getText());
-     *
-     * p.writeObject(new Student(ID, Pass)); p.flush();
-     *
-     * // Here we read the details from server BufferedReader response = new
-     * BufferedReader(new InputStreamReader( s.getInputStream()));
-     * txtS.setText("The server respond: " + response.readLine()); p.close();
-     * response.close(); s.close();
-     */
-  }
-
   @Override
   public int login(int studentid, String password) throws UnauthorizedAccess, RemoteException {
-    return 0;
+    int loggedIn = server.login(studentid, password);
+
+    if(loggedIn == 1) {
+      System.out.println("Logged in");
+      return 1;
+    } else {
+      System.out.println("Not logged in");
+      return 0;
+    }
   }
 
   @Override

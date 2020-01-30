@@ -36,9 +36,12 @@ public class ExamEngine implements ExamServer {
 	// Implement the methods defined in the ExamServer interface...
 	// Return an access token that allows access to the server for some time period
 	public int login(int studentID, String password) throws UnauthorizedAccess, RemoteException {
-
 		for (Student student : students) {
-			if (student.getID() == studentID && student.getPassword() == password) {
+			System.out.println(student.getID());
+			System.out.println(student.getPassword());
+			System.out.println(studentID);
+			System.out.println(password);
+			if (student.getID() == studentID && student.getPassword().equals(password)) {
 				sessions.add(new Session(studentID));
 				System.out.println("Student: " + studentID + " has logged in.");
 

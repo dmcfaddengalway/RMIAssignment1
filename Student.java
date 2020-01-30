@@ -1,13 +1,16 @@
-public class Student {
+import java.io.Serializable;
+
+public class Student implements Serializable {
 
   // Member Variables
   private String password;
   private int studentIDNum;
+  private static final long serialVersionUID = 1L;
 
   // Constructor
-  public Student(int studentIDNum, String password) {
+  public Student(int studentIDNum, String pass) {
     this.studentIDNum = studentIDNum;
-    this.password = password;
+    this.password = pass;
   }
 
   // Methods
