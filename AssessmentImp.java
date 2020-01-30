@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -6,7 +7,7 @@ public class AssessmentImp implements Assessment {
   // Member Variables
   private String information;
   private Date ClosingDate;
-  private List<Question> questions;
+  private List<Question> questions = new ArrayList<Question>();
   private int answer;
   private int associatedId;
   private static final long serialVersionUID = 1L;

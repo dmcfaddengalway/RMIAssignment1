@@ -7,7 +7,7 @@ public class QuestionImp implements Question {
   private static final long serialVersionUID = 1L;
 
   // Constructor
-  public QuestionImp(int qNum, String qDetails, String[] options) {
+  public QuestionImp(int qNum, String qDetails, String[] options, String answer) {
     this.questionNum = qNum;
     this.questionDetails = qDetails;
     this.options = options;

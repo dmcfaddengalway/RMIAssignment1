@@ -4,38 +4,45 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class ExamEngine implements ExamServer {
 
-	private static Student[] students;
-	private HashMap<Integer, Session> sessions;
-	private static Assessment[] assessments;
-	Random randomNumber;
+	private List<Student> students;
+	private List<Assessment> assessments;
+	private List<Session> sessions;
+	private List<Question> questions;
 
 	// Constructor is required
-	public ExamEngine(Student[] students, Assessment[] assessments) {
+	public ExamEngine() {
 		super();
-		ExamEngine.students = students;
-		ExamEngine.assessments = assessments;
-		this.sessions = new HashMap<>();
+
+		students = new ArrayList<Student>();
+    assessments = new ArrayList<Assessment>();
+    sessions = new ArrayList<Session>();
+    questions = new ArrayList<Question>();
+
+    students.add(new Student(12345678, "GY350"));
+
+		String[] a = {"6", "5", "7"};
+		Question q = new QuestionImp(1, "What is 2 + 5", a, "7");
+    questions.add(q);
+
+		Assessment assessment = new AssessmentImp("Assessment 1", new Date(new Date().getTime() + (7 * 60 * 60 * 1000)), questions, 7, 12345678);
+		assessments.add(assessment);
+
 	}
 
 	// Implement the methods defined in the ExamServer interface...
 	// Return an access token that allows access to the server for some time period
 	public int login(int studentID, String password) throws UnauthorizedAccess, RemoteException {
-		int min = 0;
-		int max = 10000000;
 
 		for (Student student : students) {
 			if (student.getID() == studentID && student.getPassword() == password) {
-				int randomNum = randomNumber.nextInt((max - min) + 1) + min;
-				sessions.put(randomNum, new Session(studentID));
+				sessions.add(new Session(studentID));
+				System.out.println("Student: " + studentID + " has logged in.");
 
-				return randomNum;
+				return 1;
 			}
 		}
 
@@ -44,12 +51,16 @@ public class ExamEngine implements ExamServer {
 
 	// Return a summary list of Assessments currently available for this studentid
 	public List<String> getAvailableSummary(int studentID, int token) throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
-		checkSessionId(token, studentID);
-		ArrayList<String> assessments = new ArrayList<String>();
+		ArrayList<String> availableAssessments = new ArrayList<String>();
 
-		for (Assessment a : ExamEngine.assessments) {
-			if (a.getAssociatedID() == studentID) {
-				assessments.add(a.getInformation());
+		for(Session session : sessions) {
+			if(session.isActive() == token && session.getStudentID() == studentID) {
+				for (Assessment assessment : assessments) {
+					if(assessment.getAssociatedID() == studentID) {
+						availableAssessments.add(assessment.getInformation());
+					}
+				}
+				break;
 			}
 		}
 
@@ -57,19 +68,23 @@ public class ExamEngine implements ExamServer {
 			throw new NoMatchingAssessment("No assessments found; please check studentID.");
 		}
 
-		return assessments;
+		return availableAssessments;
 	}
 
 	// Return an Assessment object associated with a particular course code
 	public Assessment getAssessment(int token, int studentID, String courseCode) throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
-		checkSessionId(token, studentID);
 
-		for (Assessment assessment : assessments) {
-			if(assessment.getInformation().equals(courseCode) &&
-					assessment.getAssociatedID() == studentID &&
-					assessment.getClosingDate().after(new Date())
-				) {
-				return assessment;
+		for(Session session : sessions) {
+			if(session.isActive() == token && session.getStudentID() == studentID) {
+				for (Assessment assessment : assessments) {
+					if(assessment.getInformation().equals(courseCode) &&
+							assessment.getAssociatedID() == studentID &&
+							assessment.getClosingDate().after(new Date())
+						) {
+						return assessment;
+					}
+				}
+				break;
 			}
 		}
 
@@ -77,37 +92,21 @@ public class ExamEngine implements ExamServer {
 	}
 
 	// Submit a completed assessment
-	public void submitAssessment(int token, int studentid, Assessment completed) throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
+	public void submitAssessment(int token, int studentID, Assessment completed) throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
 
-	}
-
-	private void checkSessionId(int token, int studentID) throws UnauthorizedAccess, RemoteException {
-		Session session = sessions.get(token);
-
-		if (session == null || session.getStudentId() != studentID) {
-			throw new UnauthorizedAccess("Error! Are you sure you are logged in?");
+		for(Session session : sessions) {
+			if(session.isActive() == token && session.getStudentID() == studentID) {
+				for(Assessment assessment : assessments) {
+					if(assessment.getAssociatedID() == studentID && new Date().before(assessment.getClosingDate())) {
+						System.out.println("Success! " + studentID + " has submitted their assignment.");
+						return;
+					}
+				}
+				break;
+			}
 		}
 
-		if (session.getLogout().before(new Date())) {
-			sessions.remove(token);
-			throw new UnauthorizedAccess("You have exceded the session timer. Please log in again to continue.");
-		}
-
-	}
-
-	private static Assessment[] generateAssessments(Student stu1) {
-		ArrayList<Question> questionList = new ArrayList<Question>();
-
-		Question q1 = new QuestionImp(1, "In what year did TeamSlicedBread create the H.E.L.M.E.T?",
-					new String[]{"2013", "2014", "2017"});
-		Question q2 = new QuestionImp(2, "What year is it now?",
-					new String[]{"2012","2018","2019"});
-
-		questionList.add(q1);
-		questionList.add(q2);
-
-		Assessment history = new AssessmentImp("History", new Date(new Date().getTime() + 1000), questionList, 1, 13500527);
-		return new Assessment[] { history };
+		throw new NoMatchingAssessment("No assessments were found for this course.");
 	}
 
 	public static void main(String[] args) {
@@ -115,31 +114,9 @@ public class ExamEngine implements ExamServer {
 			System.setSecurityManager(new SecurityManager());
 		}
 		try {
-			Student s1 = new Student(15105456, "desmond");
-			Student s2 = new Student(16280010, "chambers");
-
-			Student[] students = {s1, s2};
-			Assessment[] assessments = generateAssessments(s1);
-
-			ExamEngine engine = new ExamEngine(students, assessments);
-
-			// ExamEngine engine = new ExamEngine(Student[] {s1}, assessments);
-
-			int token = engine.login(s1.getID(), "desmond");
-			// Question History = engine.getAvailableSummary(s1.getId(), token).get(0).getQuestion(1);
-			List<String> historyQuestion = engine.getAvailableSummary(s1.getID(), token);
-			System.out.println(historyQuestion);
-
-			Assessment HistoryAssessment = engine.getAssessment(token, s1.getID(), "History");
-			Question Q1 = HistoryAssessment.getQuestion(1);
-			System.out.println(Q1);
-			System.out.println(Q1.getAnswerOptions()[HistoryAssessment.getSelectedAnswer(1)]);
-			HistoryAssessment.selectAnswer(1, 2);
-			System.out.println(Q1.getAnswerOptions()[HistoryAssessment.getSelectedAnswer(1)]);
-			engine.submitAssessment(token, s1.getID(), HistoryAssessment);
-
 			String name = "ExamServer";
-			// ExamServer engine1 = new ExamEngine();
+			ExamServer engine = new ExamEngine();
+
 			ExamServer stub = (ExamServer) UnicastRemoteObject.exportObject(engine, 0);
 			Registry registry = LocateRegistry.getRegistry();
 			registry.rebind(name, stub);

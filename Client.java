@@ -1,12 +1,7 @@
 import java.awt.event.ActionEvent;
 import java.rmi.*;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -21,6 +16,7 @@ import javax.swing.JTextField;
 public class Client extends JFrame implements ActionListener, ExamServer {
 
   private static final long serialVersionUID = 1L;
+  public static ExamServer server;
   JLabel lblId;
   JLabel lblPass;
   JTextField txtId;
@@ -68,7 +64,7 @@ public class Client extends JFrame implements ActionListener, ExamServer {
     new Client();
     String name = "ExamServer";
     Registry registry = LocateRegistry.getRegistry();
-    ExamServer serv = (ExamServer) registry.lookup(name);
+    server = (ExamServer) registry.lookup(name);
   }
 
   @Override
@@ -106,7 +102,7 @@ public class Client extends JFrame implements ActionListener, ExamServer {
   }
 
   @Override
-  public List<Assessment> getAvailableSummary(int token, int studentid)
+  public List<String> getAvailableSummary(int token, int studentid)
       throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
     return null;
   }
