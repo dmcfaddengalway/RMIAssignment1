@@ -113,8 +113,7 @@ public class Client extends JFrame implements ActionListener, ExamServer {
   }
 
   @Override
-  public Assessment getAssessment(int token, int studentid, String courseCode)
-      throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
+  public Assessment getAssessment(int token, int studentid, String courseCode) throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
     return null;
   }
 
