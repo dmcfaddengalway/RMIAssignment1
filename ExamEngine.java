@@ -61,6 +61,7 @@ public class ExamEngine implements ExamServer {
 		for(Session session : sessions) {
 			if(session.isActive() == token && session.getStudentID() == studentID) {
 				for (Assessment assessment : assessments) {
+					System.out.println(assessment);
 					if(assessment.getAssociatedID() == studentID) {
 						availableAssessments.add(assessment.getInformation());
 					}
