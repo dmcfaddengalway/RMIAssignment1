@@ -17,6 +17,10 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+/*
+ * Daniel McFadden (16280010)
+ * Joan Rohan (15104654)
+ */
 public class Client extends JFrame implements ActionListener, ExamServer {
 
   private static final long serialVersionUID = 1L;
@@ -24,12 +28,19 @@ public class Client extends JFrame implements ActionListener, ExamServer {
   JLabel lblId;
   JLabel lblPass;
   JLabel lblAssessmentNum;
+  JLabel lblQuestionNum;
+  JLabel lblAnswer;
+  JLabel lblSubmission;
   JTextField txtId;
   JTextField txtPass;
   JTextField txtAssessmentNum;
+  JTextField desiredQNum;
+  JTextField answerInput;
   JButton btnProcess;
   JButton btnSubmit;
+  JButton btnSubmitQuestionAnswer;
   JTextArea txtS;
+  JTextArea txtQ;
   JTextArea quest;
 
   public Client() {
@@ -82,9 +93,45 @@ public class Client extends JFrame implements ActionListener, ExamServer {
     btnSubmit.setVisible(false);
 
     quest = new JTextArea();
-    quest.setBounds(10, 300, 90, 120);
+    quest.setBounds(10, 320, 290, 120);
     add(quest);
     quest.setVisible(false);
+
+    lblQuestionNum = new JLabel("Enter Question Number: ");
+    lblQuestionNum.setBounds(10, 450, 170, 21);
+    add(lblQuestionNum);
+    lblQuestionNum.setVisible(false);
+
+    desiredQNum = new JTextField();
+    desiredQNum.setBounds(180, 450, 90, 21);
+    add(desiredQNum);
+    desiredQNum.setVisible(false);
+
+    txtQ = new JTextArea();
+    txtQ.setBounds(10, 320, 440, 120);
+    add(txtQ);
+    txtQ.setVisible(false);
+
+    lblAnswer = new JLabel("Enter Answer Number: ");
+    lblAnswer.setBounds(10, 480, 170, 21);
+    add(lblAnswer);
+    lblAnswer.setVisible(false);
+
+    answerInput = new JTextField();
+    answerInput.setBounds(180, 480, 90, 21);
+    add(answerInput);
+    answerInput.setVisible(false);
+
+    btnSubmitQuestionAnswer = new JButton("Submit");
+    btnSubmitQuestionAnswer.setBounds(100, 520, 90, 21);
+    btnSubmitQuestionAnswer.addActionListener(this);
+    add(btnSubmitQuestionAnswer);
+    btnSubmitQuestionAnswer.setVisible(false);
+
+    lblSubmission = new JLabel("Submitted!");
+    lblSubmission.setBounds(10, 550, 170, 21);
+    add(lblSubmission);
+    lblSubmission.setVisible(false);
 
     this.setVisible(true);
   }
@@ -94,30 +141,41 @@ public class Client extends JFrame implements ActionListener, ExamServer {
     String name = "ExamServer";
     Registry registry = LocateRegistry.getRegistry();
     server = (ExamServer) registry.lookup(name);
-    System.out.println("GUI started!");
   }
 
   @Override
   public void actionPerformed(ActionEvent event) {
+    int ID = Integer.parseInt(txtId.getText());
+    String pass = txtPass.getText();
+    Assessment completedAssessment = null;
+    int token = 0;
+
+    try {
+      token = this.login(ID, pass);
+    } catch (RemoteException | UnauthorizedAccess e) {
+      e.printStackTrace();
+    }
+
     if (event.getSource().equals(btnProcess)) {
       try {
-        int ID = Integer.parseInt(txtId.getText());
-        String pass = txtPass.getText();
-        int token = this.login(ID, pass);
         this.getAvailableSummary(ID, token);
       } catch (IOException | UnauthorizedAccess | NoMatchingAssessment exc1) {
         exc1.printStackTrace();
       }
     } else if (event.getSource().equals((btnSubmit))) {
       try {
-        int ID = Integer.parseInt(txtId.getText());
-        String pass = txtPass.getText();
-        int token = this.login(ID, pass);
         String assessmentID = txtAssessmentNum.getText();
-        this.getAssessment(token, ID, assessmentID);
+        completedAssessment = this.getAssessment(token, ID, assessmentID);
       } catch (IOException | UnauthorizedAccess | NoMatchingAssessment exc2) {
         exc2.printStackTrace();
       }
+    } else if (event.getSource().equals(btnSubmitQuestionAnswer)) {
+      try {
+        this.submitAssessment(token, ID, completedAssessment);
+      } catch (UnauthorizedAccess | NoMatchingAssessment | RemoteException exc4) {
+        exc4.printStackTrace();
+      }
+
     }
   }
 
@@ -125,25 +183,25 @@ public class Client extends JFrame implements ActionListener, ExamServer {
   public int login(int studentid, String password) throws UnauthorizedAccess, RemoteException {
     int loggedIn = server.login(studentid, password);
 
-    if(loggedIn == 1) {
-      System.out.println("Logged in");
+    if (loggedIn == 1) {
+
       return 1;
     } else {
-      System.out.println("Not logged in");
+
       return 0;
     }
   }
 
   @Override
-  public List<String> getAvailableSummary(int studentID, int token) throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
-    System.out.println("In Client Assessment Summary");
+  public List<String> getAvailableSummary(int studentID, int token)
+      throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
     List<String> availableAssessments;
     availableAssessments = server.getAvailableSummary(studentID, token);
 
     txtS.append("Available Assessments: \n");
-    for(String assignmentList : availableAssessments) {
+    for (String assignmentList : availableAssessments) {
       System.out.println(assignmentList);
-      txtS.append(assignmentList.toString());
+      txtS.append("Assessment #" + assignmentList.toString());
       txtS.append("\n");
     }
     lblAssessmentNum.setVisible(true);
@@ -154,16 +212,47 @@ public class Client extends JFrame implements ActionListener, ExamServer {
   }
 
   @Override
-  public Assessment getAssessment(int token, int studentid, String courseCode) throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
-    System.out.println("In Client Get Assessment");
+  public Assessment getAssessment(int token, int studentid, String courseCode)
+      throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
+    Assessment assessment = server.getAssessment(token, studentid, courseCode);
+    List<Question> questions = assessment.getQuestions();
+    txtQ.setVisible(true);
+    int answerOptionNum = 1;
 
+    txtQ.append("Available Questions: \n");
+    for (Question q : questions) {
+      String qNum = Integer.toString(q.getQuestionNumber());
+      txtQ.append(qNum + ") " + q.getQuestionDetail() + "\n");
+      for (Question qOptions : questions) {
+        String[] qOpts = qOptions.getAnswerOptions();
+        for (String option : qOpts) {
+          txtQ.append("\tOption #" + answerOptionNum++ + ") " + option.toString() + "\n");
+        }
+      }
+    }
+    lblQuestionNum.setVisible(true);
+    desiredQNum.setVisible(true);
+    lblAnswer.setVisible(true);
+    answerInput.setVisible(true);
+    btnSubmitQuestionAnswer.setVisible(true);
 
-    return null;
+    int desiredQuestion = Integer.parseInt(desiredQNum.getText());
+    int chosenAnswer = Integer.parseInt(answerInput.getText());
+
+    try {
+      assessment.selectAnswer(desiredQuestion, chosenAnswer);
+    } catch (InvalidQuestionNumber | InvalidOptionNumber e) {
+      e.printStackTrace();
+    }
+
+    return assessment;
   }
 
   @Override
   public void submitAssessment(int token, int studentid, Assessment completed)
       throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
+        server.submitAssessment(token, studentid, completed);
+        lblSubmission.setVisible(true);
 
   }
 

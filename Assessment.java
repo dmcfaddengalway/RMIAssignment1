@@ -3,6 +3,10 @@ import java.util.Date;
 import java.util.List;
 import java.io.Serializable;
 
+/*
+ * Daniel McFadden (16280010)
+ * Joan Rohan (15104654)
+ */
 public interface Assessment extends Serializable {
 
 	// Return information about the assessment

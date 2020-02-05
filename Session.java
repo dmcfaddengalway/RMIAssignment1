@@ -1,5 +1,9 @@
 import java.util.Date;
 
+/*
+ * Daniel McFadden (16280010)
+ * Joan Rohan (15104654)
+ */
 public class Session {
 
   // Member Variables

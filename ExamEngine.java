@@ -6,12 +6,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/*
+ * Daniel McFadden (16280010)
+ * Joan Rohan (15104654)
+ */
 public class ExamEngine implements ExamServer {
 
 	private List<Student> students;
 	private List<Assessment> assessments;
 	private List<Session> sessions;
-	private List<Question> questions;
+	private List<Question> questions1;
+	private List<Question> questions2;
 
 	// Constructor is required
 	public ExamEngine() {
@@ -20,16 +25,23 @@ public class ExamEngine implements ExamServer {
 		students = new ArrayList<Student>();
     assessments = new ArrayList<Assessment>();
     sessions = new ArrayList<Session>();
-    questions = new ArrayList<Question>();
+		questions1 = new ArrayList<Question>();
+		questions2 = new ArrayList<Question>();
 
     students.add(new Student(12345678, "GY350"));
 
 		String[] a = {"6", "5", "7"};
 		Question q = new QuestionImp(1, "What is 2 + 5", a, "7");
-    questions.add(q);
+		questions1.add(q);
 
-		Assessment assessment = new AssessmentImp("Assessment 1", new Date(new Date().getTime() + (7 * 60 * 60 * 1000)), questions, 7, 12345678);
-		assessments.add(assessment);
+		String[] b = { "63", "78", "84" };
+		Question r = new QuestionImp(1, "How old is Michael D Higgins", b, "78");
+		questions2.add(r);
+
+		Assessment assessment1 = new AssessmentImp("1", new Date(new Date().getTime() + (7 * 60 * 60 * 1000)), questions1, 7, 12345678);
+		Assessment assessment2 = new AssessmentImp("2", new Date(new Date().getTime() + (7 * 60 * 60 * 1000)), questions2, 78, 12345678);
+		assessments.add(assessment1);
+		assessments.add(assessment2);
 
 	}
 
@@ -55,7 +67,6 @@ public class ExamEngine implements ExamServer {
 	// Return a summary list of Assessments currently available for this studentid
 	public List<String> getAvailableSummary(int studentID, int token) throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
 		ArrayList<String> availableAssessments = new ArrayList<String>();
-		System.out.println("In Servers Assessment");
 
 		System.out.println(sessions);
 		for(Session session : sessions) {
@@ -79,7 +90,6 @@ public class ExamEngine implements ExamServer {
 
 	// Return an Assessment object associated with a particular course code
 	public Assessment getAssessment(int token, int studentID, String courseCode) throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
-
 		for(Session session : sessions) {
 			if(session.isActive() == token && session.getStudentID() == studentID) {
 				for (Assessment assessment : assessments) {
@@ -99,7 +109,6 @@ public class ExamEngine implements ExamServer {
 
 	// Submit a completed assessment
 	public void submitAssessment(int token, int studentID, Assessment completed) throws UnauthorizedAccess, NoMatchingAssessment, RemoteException {
-
 		for(Session session : sessions) {
 			if(session.isActive() == token && session.getStudentID() == studentID) {
 				for(Assessment assessment : assessments) {

@@ -3,6 +3,10 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
+/*
+ * Daniel McFadden (16280010)
+ * Joan Rohan (15104654)
+ */
 public interface ExamServer extends Remote {
 
 	// Return an access token that allows access to the server for some time period
